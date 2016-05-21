@@ -49,6 +49,11 @@ Usage
 	index = qt.GetIndex(topRight) // Will return 0
 ```
 
+# To Do
+
+* More unit tests
+* Benchmarking, profiling, performance improvements
+
 # License
 MIT
 
