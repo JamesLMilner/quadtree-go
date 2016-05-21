@@ -165,6 +165,7 @@ func setupQuadtree(x float64, y float64, width float64, height float64) *quadtre
 		Objects:    make([]quadtree.Bounds, 0),
 		Nodes:      make([]quadtree.Quadtree, 0),
 	}
+
 }
 
 func randMinMax(min float64, max float64) float64 {
