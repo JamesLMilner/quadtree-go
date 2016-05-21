@@ -5,7 +5,7 @@
 <br>
 
 <p align="center">
-![Quadtree](https://upload.wikimedia.org/wikipedia/commons/8/8b/Point_quadtree.svg)
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/8b/Point_quadtree.svg">
 </p>
 
 <br>
