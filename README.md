@@ -2,6 +2,10 @@
 
 > "A quadtree is a tree data structure in which each internal node has exactly four children. Quadtrees are most often used to partition a two-dimensional space by recursively subdividing it into four quadrants or regions. The regions may be square or rectangular, or may have arbitrary shapes. This data structure was named a quadtree by Raphael Finkel and J.L. Bentley in 1974." - Wikipedia (2016)
 
+
+![Quadtree](https://upload.wikimedia.org/wikipedia/commons/8/8b/Point_quadtree.svg)
+
+
 A Quadtree based on [this JavaScript implementation](https://github.com/timohausmann/quadtree-js) from Timo Hausmann. This is in turn based on [this post](http://gamedev.tutsplus.com/tutorials/implementation/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space/).
 
 # Setup
