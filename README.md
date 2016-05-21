@@ -26,10 +26,10 @@ Usage
 ```go
     qt := &quadtree.Quadtree{
 		Bounds: quadtree.Bounds{
-			X:      x,
-			Y:      y,
-			Width:  width,
-			Height: height,
+			X:      0,
+			Y:      0,
+			Width:  100,
+			Height: 100,
 		},
 		MaxObjects: 10,
 		MaxLevels:  4,
