@@ -51,5 +51,7 @@ Usage
 
 # License
 MIT
+
 Original JavaScript code: Copyright © 2012 Timo Hausmann
+
 Go code: Copyright © 2016 James Milner
