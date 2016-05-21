@@ -15,7 +15,7 @@ Test
     go test
 
 Usage
-
+```go
     qt := &quadtree.Quadtree{
 		Bounds: quadtree.Bounds{
 			X:      x,
@@ -39,7 +39,7 @@ Usage
 	}
 	qt.Insert(topRight) // Insert the object into the quadtree
 	index = qt.GetIndex(topRight) // Will return 0
-
+```
 
 # License
 MIT
