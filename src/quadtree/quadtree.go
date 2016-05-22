@@ -149,34 +149,26 @@ func (qt *Quadtree) Insert(pRect Bounds) {
 	}
 
 	// If we don't subnodes within the Quadtree
-	//fmt.Print(len(qt.Objects), "\n")
 	qt.Objects = append(qt.Objects, pRect)
-
-	//fmt.Print(len(qt.Objects), "\n")
-
-	//fmt.Print("Adding to objects... \n")
-	//fmt.Print(len(qt.Objects), qt.MaxObjects, qt.Level, qt.MaxLevels, "\n")
 
 	// If total objects is greater than max objects and level is less than max levels
 	if (len(qt.Objects) > qt.MaxObjects) && (qt.Level < qt.MaxLevels) {
 
 		// Split if we don't already have subnodes
 		if len(qt.Nodes)-1 > 0 == false {
-			//fmt.Print("Splitting...")
 			qt.Split()
 		}
 
 		// Add all objects to there corresponding subNodes
-		//fmt.Print("Len...", len(qt.Objects))
 		for i < len(qt.Objects) {
 
 			index = qt.GetIndex(qt.Objects[i])
 
 			if index != -1 {
-				//fmt.Print("Splicing...")
-				splice := qt.Objects[i]
-				qt.Objects = append(qt.Objects[:i], qt.Objects[i+1:]...)
-				//qt.Objects = append(qt.Objects[:i], qt.Objects[i:]...)[0] // Cut the object slice
+
+				splice := qt.Objects[i]                                  // Get the object out of the slice
+				qt.Objects = append(qt.Objects[:i], qt.Objects[i+1:]...) // Remove the object from the slice
+
 				qt.Nodes[index].Insert(splice)
 
 			} else {
