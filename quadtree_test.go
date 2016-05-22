@@ -2,7 +2,7 @@ package quadtree_test
 
 import (
 	"math/rand"
-	"quadtree"
+	"github.com/JamesMilnerUK/quadtree-go"
 	"testing"
 	"time"
 )
