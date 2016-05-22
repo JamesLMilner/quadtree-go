@@ -85,6 +85,38 @@ func TestQuadtreeInsert(t *testing.T) {
 
 }
 
+func BenchmarkInsertOneThousand(b *testing.B) {
+
+	qt := setupQuadtree(0, 0, 640, 480)
+
+	grid := 10.0
+	gridh := qt.Bounds.Width / grid
+	gridv := qt.Bounds.Height / grid
+	var randomObject quadtree.Bounds
+	numObjects := 1000
+
+	for n := 0; n < b.N; n++ {
+		for i := 0; i < numObjects; i++ {
+
+			x := randMinMax(0, gridh) * grid
+			y := randMinMax(0, gridv) * grid
+
+			randomObject = quadtree.Bounds{
+				X:      x,
+				Y:      y,
+				Width:  randMinMax(1, 4) * grid,
+				Height: randMinMax(1, 4) * grid,
+			}
+
+			qt.Insert(randomObject)
+
+		}
+	}
+
+
+
+}
+
 func TestCorrectQuad(t *testing.T) {
 
 	qt := setupQuadtree(0, 0, 100, 100)
