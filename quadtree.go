@@ -26,7 +26,7 @@ func (qt *Quadtree) Split() {
 	subWidth := qt.Bounds.Width / 2
 	subHeight := qt.Bounds.Height / 2
 	x := qt.Bounds.X
-	y := qt.Bounds.X
+	y := qt.Bounds.Y
 
 	//top right node (0)
 	qt.Nodes = append(qt.Nodes, Quadtree{
