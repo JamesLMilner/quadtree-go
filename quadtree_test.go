@@ -70,7 +70,7 @@ func TestQuadtreeInsert(t *testing.T) {
 			Height: randMinMax(1, 4) * grid,
 		}
 
-		index := qt.GetIndex(randomObject)
+		index := qt.getIndex(randomObject)
 		if index < -1 || index > 3 {
 			t.Errorf("The index should be -1 or between 0 and 3, got %d \n", index)
 		}
@@ -101,7 +101,7 @@ func TestCorrectQuad(t *testing.T) {
 		Height: 0,
 	}
 	qt.Insert(topRight)
-	index = qt.GetIndex(topRight)
+	index = qt.getIndex(topRight)
 	if index == 0 {
 		t.Errorf("The index should be 0, got %d \n", index)
 		pass = false
@@ -114,7 +114,7 @@ func TestCorrectQuad(t *testing.T) {
 		Height: 0,
 	}
 	qt.Insert(topLeft)
-	index = qt.GetIndex(topLeft)
+	index = qt.getIndex(topLeft)
 	if index == 1 {
 		t.Errorf("The index should be 1, got %d \n", index)
 		pass = false
@@ -127,7 +127,7 @@ func TestCorrectQuad(t *testing.T) {
 		Height: 0,
 	}
 	qt.Insert(bottomLeft)
-	index = qt.GetIndex(bottomLeft)
+	index = qt.getIndex(bottomLeft)
 	if index == 2 {
 		t.Errorf("The index should be 2, got %d \n", index)
 		pass = false
@@ -140,7 +140,7 @@ func TestCorrectQuad(t *testing.T) {
 		Height: 0,
 	}
 	qt.Insert(bottomRight)
-	index = qt.GetIndex(bottomRight)
+	index = qt.getIndex(bottomRight)
 	if index == 3 {
 		t.Errorf("The index should be 3, got %d \n", index)
 		pass = false
@@ -322,7 +322,7 @@ func TestQuadtreeClear(t *testing.T) {
 			Height: randMinMax(1, 4) * grid,
 		}
 
-		index := qt.GetIndex(randomObject)
+		index := qt.getIndex(randomObject)
 		if index < -1 || index > 3 {
 			t.Errorf("The index should be -1 or between 0 and 3, got %d \n", index)
 		}
@@ -340,63 +340,6 @@ func TestQuadtreeClear(t *testing.T) {
 	}
 
 }
-
-// func TestEndToEnd(t *testing.T) {
-
-// 	rand.Seed(time.Now().UTC().UnixNano()) // Seed Random properly
-
-// 	qt := setupQuadtree(0, 0, 100, 100)
-
-// 	var randomPoint Bounds
-// 	numObjects := 99
-
-// 	for i := 0; i < numObjects; i++ {
-
-// 		x := float64(i)
-// 		y := float64(i)
-
-// 		randomPoint = Bounds{
-// 			X:      x,
-// 			Y:      y,
-// 			Width:  0,
-// 			Height: 0,
-// 		}
-
-// 		index := qt.GetIndex(randomPoint)
-// 		if index < -1 || index > 3 {
-// 			t.Errorf("The index should be -1 or between 0 and 3, got %d \n", index)
-// 		}
-
-// 		qt.Insert(randomPoint)
-
-// 	}
-
-// 	iterations := 99
-// 	for j := 0; j < iterations; j++ {
-
-// 		Cursor := Bounds{
-// 			X:      float64(j),
-// 			Y:      float64(j),
-// 			Width:  0,
-// 			Height: 0,
-// 		}
-
-// 		objects := qt.Retrieve(Cursor)
-// 		//t.Log(objects)
-
-// 		if len(objects) != 1 {
-// 			t.Error("Error should retrieve one point got", len(objects))
-// 		}
-
-// 	}
-
-// 	if qt.Total != numObjects {
-// 		t.Errorf("Error: Should have totalled %d, got %d \n", numObjects, qt.Total)
-// 	} else {
-// 		t.Logf("Success: Total objects in the Quadtree is %d (as expected) \n", qt.Total)
-// 	}
-
-// }
 
 // Benchmarks
 

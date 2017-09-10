@@ -154,7 +154,7 @@ func (qt *Quadtree) split() {
 
 }
 
-// GetIndex - Determine which quadrant the object belongs to (0-3)
+// getIndex - Determine which quadrant the object belongs to (0-3)
 func (qt *Quadtree) getIndex(pRect Bounds) int {
 
 	index := -1 // index of the subnode (0-3), or -1 if pRect cannot completely fit within a subnode and is part of the parent node
@@ -204,7 +204,7 @@ func (qt *Quadtree) Insert(pRect Bounds) {
 	// If we have subnodes within the Quadtree
 	if len(qt.Nodes) > 0 == true {
 
-		index = qt.GetIndex(pRect)
+		index = qt.getIndex(pRect)
 
 		if index != -1 {
 			qt.Nodes[index].Insert(pRect)
@@ -226,7 +226,7 @@ func (qt *Quadtree) Insert(pRect Bounds) {
 		// Add all objects to there corresponding subNodes
 		for i < len(qt.Objects) {
 
-			index = qt.GetIndex(qt.Objects[i])
+			index = qt.getIndex(qt.Objects[i])
 
 			if index != -1 {
 
@@ -250,7 +250,7 @@ func (qt *Quadtree) Insert(pRect Bounds) {
 // Retrieve - Return all objects that could collide with the given object
 func (qt *Quadtree) Retrieve(pRect Bounds) []Bounds {
 
-	index := qt.GetIndex(pRect)
+	index := qt.getIndex(pRect)
 
 	// Array with all detected objects
 	returnObjects := qt.Objects
