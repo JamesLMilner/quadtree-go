@@ -1,4 +1,4 @@
-# :four_leaf_clover: Quadtree - 
+# :four_leaf_clover: Quadtree (Go)
 
 [![godoc reference](godoc.png)](https://godoc.org/github.com/JamesMilnerUK/quadtree-go)
 
