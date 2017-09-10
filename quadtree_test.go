@@ -18,12 +18,12 @@ func TestSplit(t *testing.T) {
 
 	//x, y, width, height
 	qt := setupQuadtree(0, 0, 640, 480)
-	qt.Split()
+	qt.split()
 	if len(qt.Nodes) != 4 {
 		t.Error("Quadtree did not split correctly, expected 4 nodes got", len(qt.Nodes))
 	}
 
-	qt.Split()
+	qt.split()
 	if len(qt.Nodes) != 4 {
 		t.Error("Quadtree should not split itself more than once", len(qt.Nodes))
 	}
@@ -34,9 +34,9 @@ func TestTotalSubnodes(t *testing.T) {
 
 	//x, y, width, height
 	qt := setupQuadtree(0, 0, 640, 480)
-	qt.Split()
+	qt.split()
 	for i := 0; i < len(qt.Nodes); i++ {
-		qt.Nodes[i].Split()
+		qt.Nodes[i].split()
 	}
 
 	total := qt.TotalNodes()

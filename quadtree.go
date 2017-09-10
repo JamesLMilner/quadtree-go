@@ -79,8 +79,8 @@ func (qt *Quadtree) TotalNodes() int {
 
 }
 
-// Split - Split the node into 4 subnodes
-func (qt *Quadtree) Split() {
+// split - split the node into 4 subnodes
+func (qt *Quadtree) split() {
 
 	if len(qt.Nodes) == 4 {
 		return
@@ -218,9 +218,9 @@ func (qt *Quadtree) Insert(pRect Bounds) {
 	// If total objects is greater than max objects and level is less than max levels
 	if (len(qt.Objects) > qt.MaxObjects) && (qt.Level < qt.MaxLevels) {
 
-		// Split if we don't already have subnodes
+		// split if we don't already have subnodes
 		if len(qt.Nodes) > 0 == false {
-			qt.Split()
+			qt.split()
 		}
 
 		// Add all objects to there corresponding subNodes
