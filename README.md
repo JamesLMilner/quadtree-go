@@ -1,4 +1,10 @@
-# :four_leaf_clover: Quadtree - Go
+# :four_leaf_clover: Quadtree - 
+
+[![godoc reference](godoc.png)](https://godoc.org/github.com/JamesMilnerUK/quadtree-go)
+
+A quadtree implementation in Go, featuring insertion and retrieval of bounding boxes and points.
+
+# What is it?
 
 > "A quadtree is a tree data structure in which each internal node has exactly four children. Quadtrees are most often used to partition a two-dimensional space by recursively subdividing it into four quadrants or regions. The regions may be square or rectangular, or may have arbitrary shapes. This data structure was named a quadtree by Raphael Finkel and J.L. Bentley in 1974." - Wikipedia (2016)
 
@@ -12,14 +18,6 @@
 
 
 # Setup
-
-Installation
-
-    go install
-
-Test
-
-    go test
 
 Usage
 ```go
