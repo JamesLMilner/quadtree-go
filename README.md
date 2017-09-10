@@ -10,7 +10,6 @@
 
 <br>
 
-A Quadtree based on [this JavaScript implementation](https://github.com/timohausmann/quadtree-js) from Timo Hausmann. This is in turn based on [this post](http://gamedev.tutsplus.com/tutorials/implementation/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space/).
 
 # Setup
 
@@ -48,11 +47,9 @@ Usage
 	qt.Insert(topRight) // Insert the object into the quadtree
 	index = qt.GetIndex(topRight) // Will return 0
 ```
+# Acknowledgements
 
-# To Do
-
-* More unit tests
-* Benchmarking, profiling, performance improvements
+This package is based on Timo Hausmann [JavaScript Quadtree implementation](https://github.com/timohausmann/quadtree-js). This is in turn based on [this post](http://gamedev.tutsplus.com/tutorials/implementation/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space/).
 
 # License
 MIT

@@ -19,8 +19,71 @@ type Bounds struct {
 	Height float64
 }
 
+func (b *Bounds) isPoint() bool {
+
+	if b.Width == 0 && b.Height == 0 {
+		return true
+	}
+
+	return false
+
+}
+
+// Checks if a Bounds object intersects with another Bounds
+func (b *Bounds) Intersects(a Bounds) bool {
+
+	aMaxX := a.X + a.Width
+	aMaxY := a.Y + a.Height
+	bMaxX := b.X + b.Width
+	bMaxY := b.Y + b.Height
+
+	// a is left of b
+	if aMaxX < b.X {
+		return false
+	}
+
+	// a is right of b
+	if a.X > bMaxX {
+		return false
+	}
+
+	// a is above b
+	if aMaxY < b.Y {
+		return false
+	}
+
+	// a is below b
+	if a.Y > bMaxY {
+		return false
+	}
+
+	// The two overlap
+	return true
+
+}
+
+// Retrieve the total number of sub-Quadtrees in a Quadtree
+func (qt *Quadtree) TotalNodes() int {
+
+	total := 0
+
+	if len(qt.Nodes) > 0 {
+		for i := 0; i < len(qt.Nodes); i++ {
+			total += 1
+			total += qt.Nodes[i].TotalNodes()
+		}
+	}
+
+	return total
+
+}
+
 // Split the node into 4 subnodes
 func (qt *Quadtree) Split() {
+
+	if len(qt.Nodes) == 4 {
+		return
+	}
 
 	nextLevel := qt.Level + 1
 	subWidth := qt.Bounds.Width / 2
@@ -138,7 +201,7 @@ func (qt *Quadtree) Insert(pRect Bounds) {
 	var index int
 
 	// If we have subnodes within the Quadtree
-	if len(qt.Nodes)-1 > 0 == true {
+	if len(qt.Nodes) > 0 == true {
 
 		index = qt.GetIndex(pRect)
 
@@ -155,7 +218,7 @@ func (qt *Quadtree) Insert(pRect Bounds) {
 	if (len(qt.Objects) > qt.MaxObjects) && (qt.Level < qt.MaxLevels) {
 
 		// Split if we don't already have subnodes
-		if len(qt.Nodes)-1 > 0 == false {
+		if len(qt.Nodes) > 0 == false {
 			qt.Split()
 		}
 
@@ -188,13 +251,15 @@ func (qt *Quadtree) Retrieve(pRect Bounds) []Bounds {
 
 	index := qt.GetIndex(pRect)
 
-	returnObjects := qt.Objects // Array with all detected objects
+	// Array with all detected objects
+	returnObjects := qt.Objects
 
 	//if we have subnodes ...
-	if len(qt.Nodes)-1 > 0 == true {
+	if len(qt.Nodes) > 0 {
 
 		//if pRect fits into a subnode ..
 		if index != -1 {
+
 			returnObjects = append(returnObjects, qt.Nodes[index].Retrieve(pRect)...)
 
 		} else {
@@ -211,6 +276,39 @@ func (qt *Quadtree) Retrieve(pRect Bounds) []Bounds {
 
 }
 
+// Retrieve - Return all points that collide
+func (qt *Quadtree) RetrievePoints(find Bounds) []Bounds {
+
+	var foundPoints []Bounds
+	potentials := qt.Retrieve(find)
+	for o := 0; o < len(potentials); o++ {
+
+		// X and Ys are the same and it has no Width and Height (Point)
+		xyMatch := potentials[o].X == float64(find.X) && potentials[o].Y == float64(find.Y)
+		if xyMatch && potentials[o].isPoint() {
+			foundPoints = append(foundPoints, find)
+		}
+	}
+
+	return foundPoints
+
+}
+
+func (qt *Quadtree) RetrieveIntersections(find Bounds) []Bounds {
+
+	var foundIntersections []Bounds
+
+	potentials := qt.Retrieve(find)
+	for o := 0; o < len(potentials); o++ {
+		if potentials[o].Intersects(find) {
+			foundIntersections = append(foundIntersections, potentials[o])
+		}
+	}
+
+	return foundIntersections
+
+}
+
 //Clear - Clear the Quadtree
 func (qt *Quadtree) Clear() {
 
@@ -223,5 +321,6 @@ func (qt *Quadtree) Clear() {
 	}
 
 	qt.Nodes = []Quadtree{}
+	qt.Total = 0
 
 }

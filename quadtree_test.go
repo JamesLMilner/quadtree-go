@@ -1,11 +1,50 @@
-package quadtree_test
+package quadtree
 
 import (
 	"math/rand"
-	"github.com/JamesMilnerUK/quadtree-go"
 	"testing"
 	"time"
 )
+
+func TestQuadtreeCreation(t *testing.T) {
+	//x, y, width, height
+	qt := setupQuadtree(0, 0, 640, 480)
+	if qt.Bounds.Width != 640 && qt.Bounds.Height != 480 {
+		t.Errorf("Quadtree was not created correctly")
+	}
+}
+
+func TestSplit(t *testing.T) {
+
+	//x, y, width, height
+	qt := setupQuadtree(0, 0, 640, 480)
+	qt.Split()
+	if len(qt.Nodes) != 4 {
+		t.Error("Quadtree did not split correctly, expected 4 nodes got", len(qt.Nodes))
+	}
+
+	qt.Split()
+	if len(qt.Nodes) != 4 {
+		t.Error("Quadtree should not split itself more than once", len(qt.Nodes))
+	}
+
+}
+
+func TestTotalSubnodes(t *testing.T) {
+
+	//x, y, width, height
+	qt := setupQuadtree(0, 0, 640, 480)
+	qt.Split()
+	for i := 0; i < len(qt.Nodes); i++ {
+		qt.Nodes[i].Split()
+	}
+
+	total := qt.TotalNodes()
+	if total != 20 {
+		t.Error("Quadtree did not split correctly, expected 20 nodes got", total)
+	}
+
+}
 
 func TestQuadtreeInsert(t *testing.T) {
 
@@ -16,7 +55,7 @@ func TestQuadtreeInsert(t *testing.T) {
 	grid := 10.0
 	gridh := qt.Bounds.Width / grid
 	gridv := qt.Bounds.Height / grid
-	var randomObject quadtree.Bounds
+	var randomObject Bounds
 	numObjects := 1000
 
 	for i := 0; i < numObjects; i++ {
@@ -24,7 +63,7 @@ func TestQuadtreeInsert(t *testing.T) {
 		x := randMinMax(0, gridh) * grid
 		y := randMinMax(0, gridv) * grid
 
-		randomObject = quadtree.Bounds{
+		randomObject = Bounds{
 			X:      x,
 			Y:      y,
 			Width:  randMinMax(1, 4) * grid,
@@ -41,79 +80,10 @@ func TestQuadtreeInsert(t *testing.T) {
 	}
 
 	if qt.Total != numObjects {
-		t.Errorf("Error: Should have tottled %d, got %d \n", numObjects, qt.Total)
+		t.Errorf("Error: Should have totalled %d, got %d \n", numObjects, qt.Total)
 	} else {
 		t.Logf("Success: Total objects in the Quadtree is %d (as expected) \n", qt.Total)
 	}
-
-	failure := false
-	iterations := 20
-	for j := 0; j < iterations; j++ {
-
-		Cursor := quadtree.Bounds{
-			X:      randMinMax(0, gridh) * grid,
-			Y:      randMinMax(0, gridv) * grid,
-			Width:  100,
-			Height: 100,
-		}
-
-		objects := qt.Retrieve(Cursor)
-		if len(objects) < 0 && len(objects) > numObjects {
-			failure = true
-		}
-
-	}
-
-	if failure == false {
-		t.Logf("Success: All %d iterations had objects length greater than 0 and less than inserts (%d) \n", iterations, numObjects)
-	}
-
-	// All the objects!
-	AllCursor := quadtree.Bounds{
-		X:      0,
-		Y:      0,
-		Width:  10000,
-		Height: 10000,
-	}
-
-	allObjects := qt.Retrieve(AllCursor)
-	if len(allObjects) != numObjects {
-		t.Errorf("Error: Should have returned all objects (%d) got %d \n", numObjects, len(allObjects))
-	} else {
-		t.Logf("Success: All the objects (%d) have been returned ", len(allObjects))
-	}
-
-}
-
-func BenchmarkInsertOneThousand(b *testing.B) {
-
-	qt := setupQuadtree(0, 0, 640, 480)
-
-	grid := 10.0
-	gridh := qt.Bounds.Width / grid
-	gridv := qt.Bounds.Height / grid
-	var randomObject quadtree.Bounds
-	numObjects := 1000
-
-	for n := 0; n < b.N; n++ {
-		for i := 0; i < numObjects; i++ {
-
-			x := randMinMax(0, gridh) * grid
-			y := randMinMax(0, gridv) * grid
-
-			randomObject = quadtree.Bounds{
-				X:      x,
-				Y:      y,
-				Width:  randMinMax(1, 4) * grid,
-				Height: randMinMax(1, 4) * grid,
-			}
-
-			qt.Insert(randomObject)
-
-		}
-	}
-
-
 
 }
 
@@ -124,7 +94,7 @@ func TestCorrectQuad(t *testing.T) {
 	var index int
 	pass := true
 
-	topRight := quadtree.Bounds{
+	topRight := Bounds{
 		X:      99,
 		Y:      99,
 		Width:  0,
@@ -137,7 +107,7 @@ func TestCorrectQuad(t *testing.T) {
 		pass = false
 	}
 
-	topLeft := quadtree.Bounds{
+	topLeft := Bounds{
 		X:      99,
 		Y:      1,
 		Width:  0,
@@ -150,7 +120,7 @@ func TestCorrectQuad(t *testing.T) {
 		pass = false
 	}
 
-	bottomLeft := quadtree.Bounds{
+	bottomLeft := Bounds{
 		X:      1,
 		Y:      1,
 		Width:  0,
@@ -163,7 +133,7 @@ func TestCorrectQuad(t *testing.T) {
 		pass = false
 	}
 
-	bottomRight := quadtree.Bounds{
+	bottomRight := Bounds{
 		X:      1,
 		Y:      51,
 		Width:  0,
@@ -182,20 +152,300 @@ func TestCorrectQuad(t *testing.T) {
 
 }
 
-func setupQuadtree(x float64, y float64, width float64, height float64) *quadtree.Quadtree {
+func TestQuadtreeRetrieval(t *testing.T) {
 
-	return &quadtree.Quadtree{
-		Bounds: quadtree.Bounds{
+	rand.Seed(time.Now().UTC().UnixNano()) // Seed Random properly
+
+	qt := setupQuadtree(0, 0, 640, 480)
+
+	var randomObject Bounds
+	numObjects := 100
+
+	for i := 0; i < numObjects; i++ {
+
+		randomObject = Bounds{
+			X:      float64(i),
+			Y:      float64(i),
+			Width:  0,
+			Height: 0,
+		}
+
+		qt.Insert(randomObject)
+
+	}
+
+	for j := 0; j < numObjects; j++ {
+
+		Cursor := Bounds{
+			X:      float64(j),
+			Y:      float64(j),
+			Width:  0,
+			Height: 0,
+		}
+
+		objects := qt.Retrieve(Cursor)
+
+		found := false
+
+		if len(objects) >= numObjects {
+			t.Error("Objects should not be equal to or bigger than the number of retrieved objects")
+		}
+
+		for o := 0; o < len(objects); o++ {
+			if objects[o].X == float64(j) && objects[o].Y == float64(j) {
+				found = true
+			}
+		}
+		if found != true {
+			t.Error("Error finding the correct point")
+		}
+
+	}
+
+}
+
+func TestQuadtreeRandomPointRetrieval(t *testing.T) {
+
+	rand.Seed(time.Now().UTC().UnixNano()) // Seed Random properly
+
+	qt := setupQuadtree(0, 0, 640, 480)
+
+	numObjects := 1000
+
+	for i := 1; i < numObjects+1; i++ {
+
+		randomObject := Bounds{
+			X:      float64(i),
+			Y:      float64(i),
+			Width:  0,
+			Height: 0,
+		}
+
+		qt.Insert(randomObject)
+
+	}
+
+	failure := false
+	iterations := 20
+	for j := 1; j < iterations+1; j++ {
+
+		Cursor := Bounds{
+			X:      float64(j),
+			Y:      float64(j),
+			Width:  0,
+			Height: 0,
+		}
+
+		point := qt.RetrievePoints(Cursor)
+
+		for k := 0; k < len(point); k++ {
+			if point[k].X == 0 {
+				failure = true
+			}
+			if point[k].Y == 0 {
+				failure = true
+			}
+			if failure {
+				t.Error("Point was incorrectly retrieved", point)
+			}
+			if point[k].isPoint() == false {
+				t.Error("Point should have width and height of 0")
+			}
+		}
+
+	}
+
+	if failure == false {
+		t.Logf("Success: All the points were retrieved correctly", iterations, numObjects)
+	}
+
+}
+
+func TestIntersectionRetrieval(t *testing.T) {
+	qt := setupQuadtree(0, 0, 640, 480)
+	qt.Insert(Bounds{
+		X:      1,
+		Y:      1,
+		Width:  10,
+		Height: 10,
+	})
+	qt.Insert(Bounds{
+		X:      5,
+		Y:      5,
+		Width:  10,
+		Height: 10,
+	})
+	qt.Insert(Bounds{
+		X:      10,
+		Y:      10,
+		Width:  10,
+		Height: 10,
+	})
+	qt.Insert(Bounds{
+		X:      15,
+		Y:      15,
+		Width:  10,
+		Height: 10,
+	})
+	inter := qt.RetrieveIntersections(Bounds{
+		X:      5,
+		Y:      5,
+		Width:  2.5,
+		Height: 2.5,
+	})
+	if len(inter) != 2 {
+		t.Error("Should have two intersections")
+	}
+}
+
+func TestQuadtreeClear(t *testing.T) {
+
+	rand.Seed(time.Now().UTC().UnixNano()) // Seed Random properly
+
+	qt := setupQuadtree(0, 0, 640, 480)
+
+	grid := 10.0
+	gridh := qt.Bounds.Width / grid
+	gridv := qt.Bounds.Height / grid
+	var randomObject Bounds
+	numObjects := 1000
+
+	for i := 0; i < numObjects; i++ {
+
+		x := randMinMax(0, gridh) * grid
+		y := randMinMax(0, gridv) * grid
+
+		randomObject = Bounds{
+			X:      x,
+			Y:      y,
+			Width:  randMinMax(1, 4) * grid,
+			Height: randMinMax(1, 4) * grid,
+		}
+
+		index := qt.GetIndex(randomObject)
+		if index < -1 || index > 3 {
+			t.Errorf("The index should be -1 or between 0 and 3, got %d \n", index)
+		}
+
+		qt.Insert(randomObject)
+
+	}
+
+	qt.Clear()
+
+	if qt.Total != 0 {
+		t.Errorf("Error: The Quadtree should be cleared")
+	} else {
+		t.Logf("Success: The Quadtree was cleared correctly")
+	}
+
+}
+
+// func TestEndToEnd(t *testing.T) {
+
+// 	rand.Seed(time.Now().UTC().UnixNano()) // Seed Random properly
+
+// 	qt := setupQuadtree(0, 0, 100, 100)
+
+// 	var randomPoint Bounds
+// 	numObjects := 99
+
+// 	for i := 0; i < numObjects; i++ {
+
+// 		x := float64(i)
+// 		y := float64(i)
+
+// 		randomPoint = Bounds{
+// 			X:      x,
+// 			Y:      y,
+// 			Width:  0,
+// 			Height: 0,
+// 		}
+
+// 		index := qt.GetIndex(randomPoint)
+// 		if index < -1 || index > 3 {
+// 			t.Errorf("The index should be -1 or between 0 and 3, got %d \n", index)
+// 		}
+
+// 		qt.Insert(randomPoint)
+
+// 	}
+
+// 	iterations := 99
+// 	for j := 0; j < iterations; j++ {
+
+// 		Cursor := Bounds{
+// 			X:      float64(j),
+// 			Y:      float64(j),
+// 			Width:  0,
+// 			Height: 0,
+// 		}
+
+// 		objects := qt.Retrieve(Cursor)
+// 		//t.Log(objects)
+
+// 		if len(objects) != 1 {
+// 			t.Error("Error should retrieve one point got", len(objects))
+// 		}
+
+// 	}
+
+// 	if qt.Total != numObjects {
+// 		t.Errorf("Error: Should have totalled %d, got %d \n", numObjects, qt.Total)
+// 	} else {
+// 		t.Logf("Success: Total objects in the Quadtree is %d (as expected) \n", qt.Total)
+// 	}
+
+// }
+
+// Benchmarks
+
+func BenchmarkInsertOneThousand(b *testing.B) {
+
+	qt := setupQuadtree(0, 0, 640, 480)
+
+	grid := 10.0
+	gridh := qt.Bounds.Width / grid
+	gridv := qt.Bounds.Height / grid
+	var randomObject Bounds
+	numObjects := 1000
+
+	for n := 0; n < b.N; n++ {
+		for i := 0; i < numObjects; i++ {
+
+			x := randMinMax(0, gridh) * grid
+			y := randMinMax(0, gridv) * grid
+
+			randomObject = Bounds{
+				X:      x,
+				Y:      y,
+				Width:  randMinMax(1, 4) * grid,
+				Height: randMinMax(1, 4) * grid,
+			}
+
+			qt.Insert(randomObject)
+
+		}
+	}
+
+}
+
+// Convenience Functions
+
+func setupQuadtree(x float64, y float64, width float64, height float64) *Quadtree {
+
+	return &Quadtree{
+		Bounds: Bounds{
 			X:      x,
 			Y:      y,
 			Width:  width,
 			Height: height,
 		},
-		MaxObjects: 10,
-		MaxLevels:  4,
+		MaxObjects: 4,
+		MaxLevels:  8,
 		Level:      0,
-		Objects:    make([]quadtree.Bounds, 0),
-		Nodes:      make([]quadtree.Quadtree, 0),
+		Objects:    make([]Bounds, 0),
+		Nodes:      make([]Quadtree, 0),
 	}
 
 }
