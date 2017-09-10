@@ -11,7 +11,7 @@ type Quadtree struct {
 	Total      int
 }
 
-// Bounds - A bounding box with a x y origin and width and height
+// Bounds - A bounding box with a x,y origin and width and height
 type Bounds struct {
 	X      float64
 	Y      float64
@@ -19,7 +19,8 @@ type Bounds struct {
 	Height float64
 }
 
-func (b *Bounds) isPoint() bool {
+//IsPoint - Checks if a bounds object is a point or not (has no width or height)
+func (b *Bounds) IsPoint() bool {
 
 	if b.Width == 0 && b.Height == 0 {
 		return true
@@ -29,7 +30,7 @@ func (b *Bounds) isPoint() bool {
 
 }
 
-// Checks if a Bounds object intersects with another Bounds
+// Intersects - Checks if a Bounds object intersects with another Bounds
 func (b *Bounds) Intersects(a Bounds) bool {
 
 	aMaxX := a.X + a.Width
@@ -62,7 +63,7 @@ func (b *Bounds) Intersects(a Bounds) bool {
 
 }
 
-// Retrieve the total number of sub-Quadtrees in a Quadtree
+// TotalNodes - Retrieve the total number of sub-Quadtrees in a Quadtree
 func (qt *Quadtree) TotalNodes() int {
 
 	total := 0
@@ -78,7 +79,7 @@ func (qt *Quadtree) TotalNodes() int {
 
 }
 
-// Split the node into 4 subnodes
+// Split - Split the node into 4 subnodes
 func (qt *Quadtree) Split() {
 
 	if len(qt.Nodes) == 4 {
@@ -153,7 +154,7 @@ func (qt *Quadtree) Split() {
 
 }
 
-// GetIndex - Determine which node the object belongs to
+// GetIndex - Determine which quadrant the object belongs to (0-3)
 func (qt *Quadtree) GetIndex(pRect Bounds) int {
 
 	index := -1 // index of the subnode (0-3), or -1 if pRect cannot completely fit within a subnode and is part of the parent node
@@ -276,7 +277,7 @@ func (qt *Quadtree) Retrieve(pRect Bounds) []Bounds {
 
 }
 
-// Retrieve - Return all points that collide
+// RetrievePoints - Return all points that collide
 func (qt *Quadtree) RetrievePoints(find Bounds) []Bounds {
 
 	var foundPoints []Bounds
@@ -285,7 +286,7 @@ func (qt *Quadtree) RetrievePoints(find Bounds) []Bounds {
 
 		// X and Ys are the same and it has no Width and Height (Point)
 		xyMatch := potentials[o].X == float64(find.X) && potentials[o].Y == float64(find.Y)
-		if xyMatch && potentials[o].isPoint() {
+		if xyMatch && potentials[o].IsPoint() {
 			foundPoints = append(foundPoints, find)
 		}
 	}
@@ -294,6 +295,7 @@ func (qt *Quadtree) RetrievePoints(find Bounds) []Bounds {
 
 }
 
+// RetrieveIntersections - Bring back all the bounds in a Quadtree that intersect with a provided bounds
 func (qt *Quadtree) RetrieveIntersections(find Bounds) []Bounds {
 
 	var foundIntersections []Bounds

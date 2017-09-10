@@ -248,7 +248,7 @@ func TestQuadtreeRandomPointRetrieval(t *testing.T) {
 			if failure {
 				t.Error("Point was incorrectly retrieved", point)
 			}
-			if point[k].isPoint() == false {
+			if point[k].IsPoint() == false {
 				t.Error("Point should have width and height of 0")
 			}
 		}
