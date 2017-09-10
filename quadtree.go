@@ -155,7 +155,7 @@ func (qt *Quadtree) split() {
 }
 
 // GetIndex - Determine which quadrant the object belongs to (0-3)
-func (qt *Quadtree) GetIndex(pRect Bounds) int {
+func (qt *Quadtree) getIndex(pRect Bounds) int {
 
 	index := -1 // index of the subnode (0-3), or -1 if pRect cannot completely fit within a subnode and is part of the parent node
 

@@ -37,15 +37,44 @@ Usage
 		Nodes:      make([]quadtree.Quadtree, 0),
 	}
 
-    // Methods
-    topRight := quadtree.Bounds{
-		X:      99,
-		Y:      99,
-		Width:  0, // A point essentially (0 width and height)
-		Height: 0,
-	}
-	qt.Insert(topRight) // Insert the object into the quadtree
-	index = qt.GetIndex(topRight) // Will return 0
+    // Insert some boxes
+    qt.Insert(Bounds{
+		X:      1,
+		Y:      1,
+		Width:  10,
+		Height: 10,
+	})
+	qt.Insert(Bounds{
+		X:      5,
+		Y:      5,
+		Width:  10,
+		Height: 10,
+	})
+	qt.Insert(Bounds{
+		X:      10,
+		Y:      10,
+		Width:  10,
+		Height: 10,
+	})
+	qt.Insert(Bounds{
+		X:      15,
+		Y:      15,
+		Width:  10,
+		Height: 10,
+	})
+
+	//Get all the intersections
+	intersections := qt.RetrieveIntersections(Bounds{
+		X:      5,
+		Y:      5,
+		Width:  2.5,
+		Height: 2.5,
+	})
+
+	// Clear the Quadtree
+	qt.Clear()
+
+
 ```
 # Acknowledgements
 
