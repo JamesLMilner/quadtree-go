@@ -1,6 +1,6 @@
 # :four_leaf_clover: Quadtree (Go)
 
-[![godoc reference](godoc.png)](https://godoc.org/github.com/JamesMilnerUK/quadtree-go)
+[![godoc reference](godoc.png)](https://godoc.org/github.com/JamesLMilner/quadtree-go)
 
 A quadtree implementation in Go, featuring insertion and retrieval of bounding boxes and points.
 
